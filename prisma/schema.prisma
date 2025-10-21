@@ -1,0 +1,107 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String               @id
+  name          String?
+  email         String?              @unique
+  image         String?
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+  participants  EventParticipant[]
+  projects      Project[]            @relation("ProjectOwner")
+  projectLinks  ProjectParticipant[]
+  votes         Vote[]
+  announcements Announcement[]
+  invites       EventInvite[]
+}
+
+model Event {
+  id               String              @id @default(cuid())
+  name             String
+  guideMarkdown    String?             @db.Text
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+  participants     EventParticipant[]
+  invites          EventInvite[]
+  projects         Project[]
+  announcements    Announcement[]
+  winningProject   Project?            @relation("WinningProject", fields: [winningProjectId], references: [id])
+  winningProjectId String?
+  votes            Vote[]
+}
+
+model EventParticipant {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  event     Event    @relation(fields: [eventId], references: [id])
+  eventId   String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, eventId])
+}
+
+model EventInvite {
+  id        String   @id @default(cuid())
+  code      String   @unique
+  event     Event    @relation(fields: [eventId], references: [id])
+  eventId   String
+  createdBy User?    @relation(fields: [createdById], references: [id])
+  createdById String?
+  createdAt DateTime @default(now())
+  expiresAt DateTime?
+}
+
+model Project {
+  id            String               @id @default(cuid())
+  event         Event                @relation(fields: [eventId], references: [id])
+  eventId       String
+  name          String
+  githubUrl     String
+  playableUrl   String
+  createdBy     User                 @relation("ProjectOwner", fields: [createdById], references: [id])
+  createdById   String
+  createdAt     DateTime             @default(now())
+  participants  ProjectParticipant[]
+  votes         Vote[]
+  winnerOf      Event?               @relation("WinningProject")
+}
+
+model ProjectParticipant {
+  id        String   @id @default(cuid())
+  project   Project  @relation(fields: [projectId], references: [id])
+  projectId String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+}
+
+model Vote {
+  id        String   @id @default(cuid())
+  event     Event    @relation(fields: [eventId], references: [id])
+  eventId   String
+  project   Project  @relation(fields: [projectId], references: [id])
+  projectId String
+  voter     User     @relation(fields: [voterId], references: [id])
+  voterId   String
+  createdAt DateTime @default(now())
+
+  @@unique([eventId, voterId])
+}
+
+model Announcement {
+  id          String   @id @default(cuid())
+  event       Event    @relation(fields: [eventId], references: [id])
+  eventId     String
+  title       String
+  content     String   @db.Text
+  createdAt   DateTime @default(now())
+  createdBy   User?    @relation(fields: [createdById], references: [id])
+  createdById String?
+}
