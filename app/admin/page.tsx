@@ -72,20 +72,18 @@ export default async function AdminPage() {
     }
   });
 
-  type AdminEvent = Awaited<ReturnType<typeof prisma.event.findMany>>[number];
-
-  const eventOptions = events.map((event: AdminEvent) => ({
+  const eventOptions = events.map((event) => ({
     id: event.id,
     name: event.name
   }));
 
-  const guideOptions = events.map((event: AdminEvent) => ({
+  const guideOptions = events.map((event) => ({
     id: event.id,
     name: event.name,
     guideMarkdown: event.guideMarkdown ?? ''
   }));
 
-  const winnerOptions = events.map((event: AdminEvent) => ({
+  const winnerOptions = events.map((event) => ({
     id: event.id,
     name: event.name,
     projects: event.projects.map((project) => ({
