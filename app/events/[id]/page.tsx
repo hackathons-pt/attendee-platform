@@ -4,6 +4,8 @@ import { getServerSession } from '@/lib/auth';
 import { VoteButton } from '@/components/VoteButton';
 import { ProjectSubmissionForm, type ParticipantInfo } from '@/components/ProjectSubmissionForm';
 
+export const dynamic = 'force-dynamic';
+
 function formatDate(value: Date) {
   return new Intl.DateTimeFormat('en', {
     month: 'short',
