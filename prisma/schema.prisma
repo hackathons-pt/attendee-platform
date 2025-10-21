@@ -25,7 +25,7 @@ model User {
 model Event {
   id               String              @id @default(cuid())
   name             String
-  guideMarkdown    String?             @db.Text
+  guideMarkdown    String?
   createdAt        DateTime            @default(now())
   updatedAt        DateTime            @updatedAt
   participants     EventParticipant[]
@@ -33,7 +33,7 @@ model Event {
   projects         Project[]
   announcements    Announcement[]
   winningProject   Project?            @relation("WinningProject", fields: [winningProjectId], references: [id])
-  winningProjectId String?
+  winningProjectId String?             @unique
   votes            Vote[]
 }
 
@@ -100,7 +100,7 @@ model Announcement {
   event       Event    @relation(fields: [eventId], references: [id])
   eventId     String
   title       String
-  content     String   @db.Text
+  content     String
   createdAt   DateTime @default(now())
   createdBy   User?    @relation(fields: [createdById], references: [id])
   createdById String?

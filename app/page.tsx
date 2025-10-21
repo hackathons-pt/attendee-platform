@@ -73,7 +73,7 @@ export default async function HomePage() {
     })
   ]);
 
-  const voteLookup = new Map(userVotes.map((vote) => [vote.eventId, vote.projectId]));
+  const voteLookup = new Map(userVotes.map((vote: any) => [vote.eventId, vote.projectId]));
 
   return (
     <div className="grid" style={{ gap: '2rem' }}>
@@ -103,8 +103,8 @@ export default async function HomePage() {
           <p>Use an invite code from your organizer to link an event to your account.</p>
         </section>
       ) : (
-        events.map((event) => {
-          const participants: ParticipantInfo[] = event.participants.map((participant) => ({
+        events.map((event: any) => {
+          const participants: ParticipantInfo[] = event.participants.map((participant: any) => ({
             id: participant.userId,
             name: participant.user?.name,
             email: participant.user?.email
@@ -150,7 +150,7 @@ export default async function HomePage() {
                     <p className="small">No announcements just yet.</p>
                   ) : (
                     <ul className="list">
-                      {event.announcements.slice(0, 5).map((announcement) => (
+                      {event.announcements.slice(0, 5).map((announcement: any) => (
                         <li key={announcement.id}>
                           <strong>{announcement.title}</strong>
                           <div className="small">{formatDate(announcement.createdAt)}</div>
@@ -167,7 +167,7 @@ export default async function HomePage() {
                     <p className="small">No submissions yet. Be the first one to ship!</p>
                   ) : (
                     <ul className="list">
-                      {event.projects.map((project) => {
+                      {event.projects.map((project: any) => {
                         const voteCount = project.votes.length;
                         const isWinner = event.winningProjectId === project.id;
                         const isUserVote = userVote === project.id;
@@ -198,7 +198,7 @@ export default async function HomePage() {
                                 {project.participants.length === 0 ? (
                                   <span className="small">No participants listed.</span>
                                 ) : (
-                                  project.participants.map((participant) => (
+                                  project.participants.map((participant: any) => (
                                     <span className="badge" key={participant.userId}>
                                       {participant.userId}
                                     </span>

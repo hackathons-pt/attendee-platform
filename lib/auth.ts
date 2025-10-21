@@ -17,7 +17,7 @@ export const authOptions: NextAuthOptions = {
     {
       id: 'pretix',
       name: 'Pretix',
-      type: 'oidc',
+      type: 'oauth',
       wellKnown: `${process.env.PRETIX_ISSUER?.replace(/\/$/, '')}/.well-known/openid-configuration`,
       clientId: process.env.PRETIX_CLIENT_ID,
       clientSecret: process.env.PRETIX_CLIENT_SECRET,
@@ -42,9 +42,11 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.sub ?? '';
-        session.user.email = token.email;
-        (session.user as { isAdmin?: boolean }).isAdmin = token.email === adminEmail;
+        const su = session.user as SessionUser;
+        su.id = token.sub ?? '';
+        su.email = token.email as string | undefined | null;
+        (su as { isAdmin?: boolean }).isAdmin = token.email === adminEmail;
+        session.user = su as any;
       }
       return session;
     },
@@ -57,20 +59,13 @@ export const authOptions: NextAuthOptions = {
   }
 };
 
-export const { auth, handlers, signIn, signOut } = NextAuth({
-  ...authOptions,
-  trustHost: true,
-  callbacks: {
-    ...authOptions.callbacks,
-    async session(params) {
-      const result = await authOptions.callbacks?.session?.(params as {
-        session: { user?: SessionUser }; token: JWT; user?: SessionUser;
-      });
-      return result ?? params.session;
-    }
-  }
-});
+// authOptions is exported above and consumed by the auth route.
 
-export async function getServerSession() {
-  return auth();
+// Helper to get server session using NextAuth's utility (avoids creating the handler here)
+export async function getServerSession(): Promise<any> {
+  const { getServerSession: _getServerSession } = await import('next-auth/next');
+  return _getServerSession(authOptions as any);
 }
+
+// Backwards-compatible alias used by server actions in the codebase.
+export const auth = getServerSession;

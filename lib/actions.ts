@@ -107,7 +107,7 @@ export async function createProjectAction(_: ActionState, formData: FormData): P
     return { error: 'You must join the event before shipping a project.' };
   }
 
-  const participantIds = new Set(event.participants.map((p) => p.userId));
+  const participantIds = new Set(event.participants.map((p: any) => p.userId));
   const invalidMembers = parsed.data.participants.filter((id) => !participantIds.has(id));
   if (invalidMembers.length > 0) {
     return {
@@ -160,7 +160,7 @@ export async function castVoteAction(_: ActionState, formData: FormData): Promis
     return { error: 'Project not found.' };
   }
 
-  const participant = project.event.participants.find((p) => p.userId === session.user.id);
+  const participant = project.event.participants.find((p: any) => p.userId === session.user.id);
   if (!participant) {
     return { error: 'You can only vote in events that you have joined.' };
   }

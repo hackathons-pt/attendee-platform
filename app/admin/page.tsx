@@ -39,7 +39,7 @@ export default async function AdminPage() {
     );
   }
 
-  const events = await prisma.event.findMany({
+  const events: any[] = await prisma.event.findMany({
     include: {
       invites: {
         orderBy: { createdAt: 'desc' }
@@ -72,21 +72,21 @@ export default async function AdminPage() {
     }
   });
 
-  const eventOptions = events.map((event) => ({
+  const eventOptions = events.map((event: any) => ({
     id: event.id,
     name: event.name
   }));
 
-  const guideOptions = events.map((event) => ({
+  const guideOptions = events.map((event: any) => ({
     id: event.id,
     name: event.name,
     guideMarkdown: event.guideMarkdown ?? ''
   }));
 
-  const winnerOptions = events.map((event) => ({
+  const winnerOptions = events.map((event: any) => ({
     id: event.id,
     name: event.name,
-    projects: event.projects.map((project) => ({
+    projects: event.projects.map((project: any) => ({
       id: project.id,
       name: project.name
     }))
@@ -120,9 +120,9 @@ export default async function AdminPage() {
           <p>Create your first event to get started.</p>
         </section>
       ) : (
-        events.map((event) => {
+        events.map((event: any) => {
           const leaderboard = [...event.projects]
-            .map((project) => ({
+            .map((project: any) => ({
               id: project.id,
               name: project.name,
               votes: project.votes.length
@@ -147,7 +147,7 @@ export default async function AdminPage() {
                   <p className="small">No codes generated yet.</p>
                 ) : (
                   <ul className="list">
-                    {event.invites.slice(0, 5).map((invite) => (
+                    {event.invites.slice(0, 5).map((invite: any) => (
                       <li key={invite.id}>
                         <strong>{invite.code}</strong>
                         <div className="small">Created {formatDate(invite.createdAt)}</div>
@@ -208,7 +208,7 @@ export default async function AdminPage() {
                   <p className="small">No announcements have been published.</p>
                 ) : (
                   <ul className="list">
-                    {event.announcements.slice(0, 5).map((announcement) => (
+                    {event.announcements.slice(0, 5).map((announcement: any) => (
                       <li key={announcement.id}>
                         <strong>{announcement.title}</strong>
                         <div className="small">{formatDate(announcement.createdAt)}</div>

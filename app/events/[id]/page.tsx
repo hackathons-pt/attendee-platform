@@ -64,7 +64,7 @@ export default async function EventPage({ params }: EventPageProps) {
     notFound();
   }
 
-  const isParticipant = event.participants.some((participant) => participant.userId === session.user.id);
+  const isParticipant = event.participants.some((participant: any) => participant.userId === session.user.id);
   const isAdmin = session.user.email === 'fonz@hackclub.com';
 
   if (!isParticipant && !isAdmin) {
@@ -76,7 +76,7 @@ export default async function EventPage({ params }: EventPageProps) {
     );
   }
 
-  const participantInfos: ParticipantInfo[] = event.participants.map((participant) => ({
+  const participantInfos: ParticipantInfo[] = event.participants.map((participant: any) => ({
     id: participant.userId,
     name: participant.user?.name,
     email: participant.user?.email
@@ -117,7 +117,7 @@ export default async function EventPage({ params }: EventPageProps) {
             <p className="small">Nothing announced yet.</p>
           ) : (
             <ul className="list">
-              {event.announcements.map((announcement) => (
+              {event.announcements.map((announcement: any) => (
                 <li key={announcement.id}>
                   <strong>{announcement.title}</strong>
                   <div className="small">{formatDate(announcement.createdAt)}</div>
@@ -134,7 +134,7 @@ export default async function EventPage({ params }: EventPageProps) {
             <p className="small">No submissions yet.</p>
           ) : (
             <ul className="list">
-              {event.projects.map((project) => (
+              {event.projects.map((project: any) => (
                 <li key={project.id}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
                     <div>
@@ -156,7 +156,7 @@ export default async function EventPage({ params }: EventPageProps) {
                     />
                   </div>
                   <div style={{ marginTop: '0.75rem', display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                    {project.participants.map((participant) => (
+                    {project.participants.map((participant: any) => (
                       <span className="badge" key={participant.userId}>
                         {participant.userId}
                       </span>
